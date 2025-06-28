@@ -1,4 +1,3 @@
-
 import { Doctor, FilterOptions, SymptomSpecialtyMapping } from '@/types/doctor';
 
 const symptomSpecialtyMap: SymptomSpecialtyMapping = {
@@ -26,80 +25,8 @@ const symptomSpecialtyMap: SymptomSpecialtyMapping = {
   'cough': ['Pulmonologist', 'General Physician']
 };
 
-// More realistic Indian doctor names
-const realisticDoctorNames = [
-  'Dr. Rajesh Kumar Sharma', 'Dr. Priya Agarwal', 'Dr. Amit Singh Patel', 'Dr. Sunita Rani Gupta',
-  'Dr. Vikram Chand Joshi', 'Dr. Kavita Devi Modi', 'Dr. Suresh Kumar Verma', 'Dr. Meera Shah',
-  'Dr. Ashok Kumar Singh', 'Dr. Nisha Kumari Jain', 'Dr. Ravi Shankar Krishnan', 'Dr. Anjali Deshmukh',
-  'Dr. Prakash Chandra Joshi', 'Dr. Rekha Singh', 'Dr. Kiran Malhotra', 'Dr. Santosh Tiwari',
-  'Dr. Deepak Kumar Agarwal', 'Dr. Pooja Sharma', 'Dr. Manoj Singh Chauhan', 'Dr. Sita Devi Yadav',
-  'Dr. Ramesh Chand Gupta', 'Dr. Seema Agarwal', 'Dr. Vinod Kumar Patel', 'Dr. Mamta Singh',
-  'Dr. Anil Kumar Sharma', 'Dr. Rashmi Agarwal', 'Dr. Sanjay Kumar Jain', 'Dr. Usha Devi Modi'
-];
-
-// Realistic hospital/clinic name patterns
-const hospitalPatterns = [
-  'City Hospital', 'Medical Center', 'Healthcare Clinic', 'Specialty Hospital',
-  'Nursing Home', 'Diagnostic Center', 'Multi-Specialty Hospital', 'Care Hospital',
-  'Health Center', 'Polyclinic', 'Super Specialty Hospital', 'Medical Institute'
-];
-
-// Function to get realistic clinic name based on location and specialty
-function getRealisticClinicName(locationName: string, specialty: string): string {
-  const patterns = [
-    `${locationName} ${specialty} Clinic`,
-    `${specialty} Care Center, ${locationName}`,
-    `${locationName} ${hospitalPatterns[Math.floor(Math.random() * hospitalPatterns.length)]}`,
-    `Advanced ${specialty} Center`,
-    `${locationName} Medical Center`,
-    `${specialty} Specialty Hospital`
-  ];
-  return patterns[Math.floor(Math.random() * patterns.length)];
-}
-
-// Function to generate realistic addresses based on actual location data
-async function getRealisticAddress(locationCoords: {lat: number, lng: number}, locationName: string): Promise<string> {
-  try {
-    // Try to get detailed address information from reverse geocoding
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${locationCoords.lat}&lon=${locationCoords.lng}&addressdetails=1`,
-      {
-        headers: {
-          'User-Agent': 'HealthFinder-App/1.0'
-        }
-      }
-    );
-    
-    if (response.ok) {
-      const result = await response.json();
-      if (result && result.address) {
-        const addr = result.address;
-        const roadNames = [
-          addr.road, addr.pedestrian, addr.footway, addr.cycleway,
-          'Main Road', 'Station Road', 'Market Road', 'Hospital Road',
-          'Gandhi Road', 'Nehru Street', 'Park Street', 'Commercial Street'
-        ].filter(Boolean);
-        
-        const selectedRoad = roadNames[Math.floor(Math.random() * roadNames.length)] || 'Main Road';
-        const buildingNumber = Math.floor(Math.random() * 999) + 1;
-        
-        return `${buildingNumber}, ${selectedRoad}, ${locationName}`;
-      }
-    }
-  } catch (error) {
-    console.log('Could not fetch detailed address, using generic format');
-  }
-  
-  // Fallback to generic but realistic address format
-  const roadNames = ['Main Road', 'Station Road', 'Market Street', 'Gandhi Road', 'Commercial Complex'];
-  const buildingNumber = Math.floor(Math.random() * 999) + 1;
-  const selectedRoad = roadNames[Math.floor(Math.random() * roadNames.length)];
-  
-  return `${buildingNumber}, ${selectedRoad}, ${locationName}`;
-}
-
-// Enhanced function to generate more realistic doctors for any location
-async function generateRealisticDoctorsForLocation(locationName: string, locationCoords: {lat: number, lng: number}): Promise<Doctor[]> {
+// Function to generate realistic doctors for any location
+function generateDoctorsForLocation(locationName: string, locationCoords: {lat: number, lng: number}): Doctor[] {
   const specialties = [
     { name: 'Dermatologist', sub: 'Skin & Hair Specialist' },
     { name: 'Cardiologist', sub: 'Heart Disease Specialist' },
@@ -111,51 +38,51 @@ async function generateRealisticDoctorsForLocation(locationName: string, locatio
     { name: 'Endocrinologist', sub: 'Diabetes & Hormone Specialist' }
   ];
 
-  const doctors: Doctor[] = [];
-  const doctorsPerSpecialty = 3;
+  const doctorNames = [
+    'Dr. Rajesh Kumar', 'Dr. Priya Sharma', 'Dr. Amit Singh', 'Dr. Sunita Patel',
+    'Dr. Vikram Agarwal', 'Dr. Kavita Modi', 'Dr. Suresh Gupta', 'Dr. Meera Shah',
+    'Dr. Ashok Verma', 'Dr. Nisha Jain', 'Dr. Ravi Krishnan', 'Dr. Anjali Deshmukh',
+    'Dr. Prakash Joshi', 'Dr. Rekha Singh', 'Dr. Kiran Malhotra', 'Dr. Santosh Tiwari'
+  ];
 
-  for (let specIndex = 0; specIndex < specialties.length; specIndex++) {
-    const specialty = specialties[specIndex];
-    
+  const doctors: Doctor[] = [];
+  const doctorsPerSpecialty = 3; // Generate more doctors per specialty
+
+  specialties.forEach((specialty, specIndex) => {
     for (let i = 0; i < doctorsPerSpecialty; i++) {
       const doctorIndex = (specIndex * doctorsPerSpecialty) + i;
       const experience = Math.floor(Math.random() * 15) + 5;
-      const rating = 4.1 + Math.random() * 0.8; // More realistic rating range
-      const reviewCount = Math.floor(Math.random() * 150) + 25;
+      const rating = 4.2 + Math.random() * 0.6;
+      const reviewCount = Math.floor(Math.random() * 200) + 50;
       const onlineFee = 300 + Math.floor(Math.random() * 400);
       const offlineFee = onlineFee + Math.floor(Math.random() * 300) + 200;
 
-      // Add variation to coordinates (within ~5-10km radius for more realistic spread)
-      const latVariation = (Math.random() - 0.5) * 0.08;
-      const lngVariation = (Math.random() - 0.5) * 0.08;
-
-      const clinicCoords = {
-        lat: locationCoords.lat + latVariation,
-        lng: locationCoords.lng + lngVariation
-      };
-
-      // Get realistic address
-      const address = await getRealisticAddress(clinicCoords, locationName);
+      // Add variation to coordinates (within ~10km radius)
+      const latVariation = (Math.random() - 0.5) * 0.15;
+      const lngVariation = (Math.random() - 0.5) * 0.15;
 
       doctors.push({
         id: `${locationName.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${specIndex}-${i}`,
-        name: realisticDoctorNames[doctorIndex % realisticDoctorNames.length],
+        name: doctorNames[doctorIndex % doctorNames.length],
         specialty: specialty.name,
         subSpecialty: specialty.sub,
-        qualifications: ['MBBS', `MD ${specialty.name}`, 'DGO'][Math.random() > 0.7 ? 'slice' : 'slice'](0, 2),
+        qualifications: ['MBBS', `MD ${specialty.name}`],
         experience,
         rating: Math.round(rating * 10) / 10,
         reviewCount,
         consultationFee: { online: onlineFee, offline: offlineFee },
         clinic: {
-          name: getRealisticClinicName(locationName, specialty.name),
-          address,
+          name: `${locationName} ${specialty.name} Clinic`,
+          address: `${Math.floor(Math.random() * 999) + 1} Main Road, ${locationName}`,
           city: locationName,
           pincode: `${Math.floor(Math.random() * 90000) + 100000}`,
-          coordinates: clinicCoords
+          coordinates: {
+            lat: locationCoords.lat + latVariation,
+            lng: locationCoords.lng + lngVariation
+          }
         },
         availability: {
-          nextSlot: Math.random() > 0.6 ? 'Today 3:00 PM' : Math.random() > 0.5 ? 'Tomorrow 10:00 AM' : 'Day after tomorrow 2:00 PM',
+          nextSlot: Math.random() > 0.5 ? 'Today 3:00 PM' : 'Tomorrow 10:00 AM',
           mode: ['online', 'offline', 'both'][Math.floor(Math.random() * 3)] as 'online' | 'offline' | 'both',
           schedule: {
             'Monday': ['10:00 AM', '4:00 PM'],
@@ -164,12 +91,12 @@ async function generateRealisticDoctorsForLocation(locationName: string, locatio
           }
         },
         contact: { phone: `+91-${Math.floor(Math.random() * 9000000000) + 1000000000}` },
-        languages: ['English', 'Hindi', 'Local Language'],
-        verified: Math.random() > 0.2, // 80% verification rate
+        languages: ['English', 'Hindi'],
+        verified: true,
         distance: 0
       });
     }
-  }
+  });
 
   return doctors;
 }
@@ -232,32 +159,9 @@ export const doctorService = {
     console.log('Starting search with query:', query, 'location:', userLocation);
 
     if (userLocation) {
-      // Try to get location name from coordinates for more realistic data
-      let locationName = 'Your Area';
-      
-      try {
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${userLocation.lat}&lon=${userLocation.lng}&addressdetails=1`,
-          {
-            headers: {
-              'User-Agent': 'HealthFinder-App/1.0'
-            }
-          }
-        );
-        
-        if (response.ok) {
-          const result = await response.json();
-          if (result && result.address) {
-            const addr = result.address;
-            locationName = addr.city || addr.town || addr.village || addr.county || addr.state || 'Your Area';
-          }
-        }
-      } catch (error) {
-        console.log('Could not determine location name, using default');
-      }
-
-      console.log(`Generating realistic doctors for ${locationName}`);
-      results = await generateRealisticDoctorsForLocation(locationName, userLocation);
+      // Generate doctors around user's location
+      console.log('Generating doctors for user location');
+      results = generateDoctorsForLocation('Your Area', userLocation);
       
       // Calculate distances
       results = results.map(doctor => ({
@@ -288,10 +192,10 @@ export const doctorService = {
       ];
       
       results = [];
-      for (const city of majorCities) {
-        const cityDoctors = await generateRealisticDoctorsForLocation(city.name, city);
+      majorCities.forEach(city => {
+        const cityDoctors = generateDoctorsForLocation(city.name, city);
         results.push(...cityDoctors);
-      }
+      });
       
       console.log(`Generated ${results.length} doctors for major cities`);
     }
