@@ -1,8 +1,9 @@
 
 import { Doctor, FilterOptions, SymptomSpecialtyMapping } from '@/types/doctor';
 
-// Mock data - In real app, this would come from API
+// Mock data with doctors in multiple cities
 const mockDoctors: Doctor[] = [
+  // Bangalore Doctors
   {
     id: '1',
     name: 'Dr. Priya Sharma',
@@ -63,22 +64,24 @@ const mockDoctors: Doctor[] = [
     languages: ['English', 'Hindi', 'Tamil'],
     verified: true
   },
+  
+  // Mumbai Doctors
   {
     id: '3',
     name: 'Dr. Sunita Patel',
-    specialty: 'Gastroenterologist',
-    subSpecialty: 'Digestive System Specialist',
-    qualifications: ['MBBS', 'MD Internal Medicine', 'DM Gastroenterology'],
+    specialty: 'Dermatologist',
+    subSpecialty: 'Skin Disease Specialist',
+    qualifications: ['MBBS', 'MD Dermatology'],
     experience: 12,
     rating: 4.7,
     reviewCount: 203,
     consultationFee: { online: 600, offline: 900 },
     clinic: {
-      name: 'Digestive Care Center',
-      address: '789 Koramangala, Bangalore',
-      city: 'Bangalore',
-      pincode: '560034',
-      coordinates: { lat: 12.9279, lng: 77.6271 }
+      name: 'Mumbai Skin Clinic',
+      address: '789 Bandra West, Mumbai',
+      city: 'Mumbai',
+      pincode: '400050',
+      coordinates: { lat: 19.0596, lng: 72.8295 }
     },
     availability: {
       nextSlot: 'Today 5:00 PM',
@@ -90,7 +93,7 @@ const mockDoctors: Doctor[] = [
       }
     },
     contact: { phone: '+91-9876543212' },
-    languages: ['English', 'Hindi', 'Gujarati'],
+    languages: ['English', 'Hindi', 'Marathi'],
     verified: true
   },
   {
@@ -104,11 +107,11 @@ const mockDoctors: Doctor[] = [
     reviewCount: 178,
     consultationFee: { online: 450, offline: 700 },
     clinic: {
-      name: 'Bone Care Clinic',
-      address: '321 Indiranagar, Bangalore',
-      city: 'Bangalore',
-      pincode: '560038',
-      coordinates: { lat: 12.9719, lng: 77.6412 }
+      name: 'Mumbai Bone Care',
+      address: '321 Andheri East, Mumbai',
+      city: 'Mumbai',
+      pincode: '400069',
+      coordinates: { lat: 19.1136, lng: 72.8697 }
     },
     availability: {
       nextSlot: 'Tomorrow 2:00 PM',
@@ -120,7 +123,131 @@ const mockDoctors: Doctor[] = [
       }
     },
     contact: { phone: '+91-9876543213' },
-    languages: ['English', 'Hindi', 'Punjabi'],
+    languages: ['English', 'Hindi', 'Marathi'],
+    verified: true
+  },
+
+  // Delhi Doctors
+  {
+    id: '5',
+    name: 'Dr. Neha Gupta',
+    specialty: 'Gastroenterologist',
+    subSpecialty: 'Digestive System Specialist',
+    qualifications: ['MBBS', 'MD Internal Medicine', 'DM Gastroenterology'],
+    experience: 14,
+    rating: 4.8,
+    reviewCount: 245,
+    consultationFee: { online: 700, offline: 1000 },
+    clinic: {
+      name: 'Delhi Digestive Care',
+      address: '456 CP, New Delhi',
+      city: 'Delhi',
+      pincode: '110001',
+      coordinates: { lat: 28.7041, lng: 77.1025 }
+    },
+    availability: {
+      nextSlot: 'Today 4:00 PM',
+      mode: 'both',
+      schedule: {
+        'Monday': ['10:00 AM', '4:00 PM'],
+        'Wednesday': ['10:00 AM', '4:00 PM'],
+        'Friday': ['10:00 AM', '2:00 PM']
+      }
+    },
+    contact: { phone: '+91-9876543214' },
+    languages: ['English', 'Hindi'],
+    verified: true
+  },
+  {
+    id: '6',
+    name: 'Dr. Rohit Sharma',
+    specialty: 'Cardiologist',
+    subSpecialty: 'Heart Specialist',
+    qualifications: ['MBBS', 'MD Cardiology'],
+    experience: 11,
+    rating: 4.5,
+    reviewCount: 189,
+    consultationFee: { online: 600, offline: 900 },
+    clinic: {
+      name: 'Delhi Heart Center',
+      address: '789 Lajpat Nagar, Delhi',
+      city: 'Delhi',
+      pincode: '110024',
+      coordinates: { lat: 28.5677, lng: 77.2500 }
+    },
+    availability: {
+      nextSlot: 'Tomorrow 11:00 AM',
+      mode: 'both',
+      schedule: {
+        'Tuesday': ['11:00 AM', '5:00 PM'],
+        'Thursday': ['11:00 AM', '5:00 PM'],
+        'Saturday': ['9:00 AM', '1:00 PM']
+      }
+    },
+    contact: { phone: '+91-9876543215' },
+    languages: ['English', 'Hindi'],
+    verified: true
+  },
+
+  // Surat Doctors
+  {
+    id: '7',
+    name: 'Dr. Kiran Patel',
+    specialty: 'Dermatologist',
+    subSpecialty: 'Skin Care Specialist',
+    qualifications: ['MBBS', 'MD Dermatology'],
+    experience: 9,
+    rating: 4.6,
+    reviewCount: 134,
+    consultationFee: { online: 400, offline: 600 },
+    clinic: {
+      name: 'Surat Skin Clinic',
+      address: '123 Ring Road, Surat',
+      city: 'Surat',
+      pincode: '395001',
+      coordinates: { lat: 21.1702, lng: 72.8311 }
+    },
+    availability: {
+      nextSlot: 'Today 6:00 PM',
+      mode: 'both',
+      schedule: {
+        'Monday': ['9:00 AM', '6:00 PM'],
+        'Wednesday': ['9:00 AM', '6:00 PM'],
+        'Friday': ['9:00 AM', '3:00 PM']
+      }
+    },
+    contact: { phone: '+91-9876543216' },
+    languages: ['English', 'Hindi', 'Gujarati'],
+    verified: true
+  },
+  {
+    id: '8',
+    name: 'Dr. Vikram Shah',
+    specialty: 'Gastroenterologist',
+    subSpecialty: 'Stomach & Liver Specialist',
+    qualifications: ['MBBS', 'MD Medicine', 'DM Gastroenterology'],
+    experience: 13,
+    rating: 4.7,
+    reviewCount: 167,
+    consultationFee: { online: 500, offline: 750 },
+    clinic: {
+      name: 'Surat Digestive Center',
+      address: '456 Athwa Lines, Surat',
+      city: 'Surat',
+      pincode: '395007',
+      coordinates: { lat: 21.1959, lng: 72.8302 }
+    },
+    availability: {
+      nextSlot: 'Tomorrow 3:00 PM',
+      mode: 'both',
+      schedule: {
+        'Tuesday': ['3:00 PM', '7:00 PM'],
+        'Thursday': ['3:00 PM', '7:00 PM'],
+        'Saturday': ['10:00 AM', '2:00 PM']
+      }
+    },
+    contact: { phone: '+91-9876543217' },
+    languages: ['English', 'Hindi', 'Gujarati'],
     verified: true
   }
 ];
@@ -162,7 +289,29 @@ export const doctorService = {
     let results = [...mockDoctors];
     console.log('Starting search with query:', query, 'location:', userLocation);
 
-    // Filter by symptom/specialty only if query is provided
+    // Step 1: Filter by location first (within 30km range)
+    if (userLocation) {
+      results = results.map(doctor => ({
+        ...doctor,
+        distance: calculateDistance(
+          userLocation.lat,
+          userLocation.lng,
+          doctor.clinic.coordinates.lat,
+          doctor.clinic.coordinates.lng
+        )
+      }));
+
+      // Filter doctors within 30km range
+      const maxRange = 30; // 30km range
+      results = results.filter(doctor => (doctor.distance || 0) <= maxRange);
+      
+      console.log(`Found ${results.length} doctors within ${maxRange}km`);
+      
+      // Sort by distance
+      results.sort((a, b) => (a.distance || 0) - (b.distance || 0));
+    }
+
+    // Step 2: Filter by disease/symptom/specialty if query is provided
     if (query && query.trim()) {
       const queryLower = query.toLowerCase().trim();
       const matchingSpecialties = new Set<string>();
@@ -185,30 +334,10 @@ export const doctorService = {
         doctor.subSpecialty?.toLowerCase().includes(queryLower)
       );
       
-      console.log('After query filtering:', results.length);
+      console.log(`After disease/specialty filtering: ${results.length} doctors found`);
     }
 
-    // Calculate distances if user location is available
-    if (userLocation) {
-      results = results.map(doctor => ({
-        ...doctor,
-        distance: calculateDistance(
-          userLocation.lat,
-          userLocation.lng,
-          doctor.clinic.coordinates.lat,
-          doctor.clinic.coordinates.lng
-        )
-      }));
-
-      // Filter by distance
-      results = results.filter(doctor => (doctor.distance || 0) <= filters.distance);
-      
-      // Sort by distance
-      results.sort((a, b) => (a.distance || 0) - (b.distance || 0));
-      console.log('After distance filtering and sorting:', results.length);
-    }
-
-    // Apply other filters
+    // Step 3: Apply other filters
     results = results.filter(doctor => {
       if (filters.consultationMode !== 'all') {
         if (filters.consultationMode === 'online' && doctor.availability.mode === 'offline') return false;

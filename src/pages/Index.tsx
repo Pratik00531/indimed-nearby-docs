@@ -35,18 +35,29 @@ const Index = () => {
     loadInitialDoctors();
   }, []);
 
-  // Update search when location or filters change
+  // Update search when location changes (but not filters to avoid too many calls)
+  useEffect(() => {
+    if (userLocation && (searchQuery || doctors.length > 0)) {
+      console.log('Location changed, re-searching...');
+      handleSearch();
+    }
+  }, [userLocation]);
+
+  // Update search when filters change
   useEffect(() => {
     if (searchQuery || doctors.length > 0) {
       handleSearch();
     }
-  }, [userLocation, filters]);
+  }, [filters]);
 
   const loadInitialDoctors = async () => {
     setIsLoading(true);
     try {
-      // Load all doctors initially without any search query
-      const results = await doctorService.searchDoctors('', null, filters);
+      // Load all doctors initially without location constraint
+      const results = await doctorService.searchDoctors('', null, {
+        ...filters,
+        distance: 50 // Increased range for initial load
+      });
       setDoctors(results);
       setFilteredDoctors(results);
       console.log('Loaded initial doctors:', results.length);
