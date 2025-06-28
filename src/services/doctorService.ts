@@ -160,10 +160,11 @@ export const doctorService = {
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     let results = [...mockDoctors];
+    console.log('Starting search with query:', query, 'location:', userLocation);
 
-    // Filter by symptom/specialty
-    if (query) {
-      const queryLower = query.toLowerCase();
+    // Filter by symptom/specialty only if query is provided
+    if (query && query.trim()) {
+      const queryLower = query.toLowerCase().trim();
       const matchingSpecialties = new Set<string>();
       
       // Check symptom mapping
@@ -183,6 +184,8 @@ export const doctorService = {
         doctor.name.toLowerCase().includes(queryLower) ||
         doctor.subSpecialty?.toLowerCase().includes(queryLower)
       );
+      
+      console.log('After query filtering:', results.length);
     }
 
     // Calculate distances if user location is available
@@ -202,6 +205,7 @@ export const doctorService = {
       
       // Sort by distance
       results.sort((a, b) => (a.distance || 0) - (b.distance || 0));
+      console.log('After distance filtering and sorting:', results.length);
     }
 
     // Apply other filters
@@ -219,6 +223,7 @@ export const doctorService = {
       return true;
     });
 
+    console.log('Final results after all filters:', results.length);
     return results;
   },
 

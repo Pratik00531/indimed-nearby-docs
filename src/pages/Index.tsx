@@ -30,20 +30,40 @@ const Index = () => {
     distance: 25
   });
 
+  // Load initial doctors on component mount
   useEffect(() => {
-    if (userLocation) {
+    loadInitialDoctors();
+  }, []);
+
+  // Update search when location or filters change
+  useEffect(() => {
+    if (searchQuery || doctors.length > 0) {
       handleSearch();
     }
   }, [userLocation, filters]);
 
+  const loadInitialDoctors = async () => {
+    setIsLoading(true);
+    try {
+      // Load all doctors initially without any search query
+      const results = await doctorService.searchDoctors('', null, filters);
+      setDoctors(results);
+      setFilteredDoctors(results);
+      console.log('Loaded initial doctors:', results.length);
+    } catch (error) {
+      console.error('Error loading initial doctors:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleSearch = async () => {
-    if (!searchQuery && !userLocation) return;
-    
     setIsLoading(true);
     try {
       const results = await doctorService.searchDoctors(searchQuery, userLocation, filters);
       setDoctors(results);
       setFilteredDoctors(results);
+      console.log('Search results:', results.length);
     } catch (error) {
       console.error('Search error:', error);
     } finally {
@@ -52,6 +72,7 @@ const Index = () => {
   };
 
   const handleLocationDetected = (location: {lat: number, lng: number}) => {
+    console.log('Location detected:', location);
     setUserLocation(location);
   };
 
@@ -152,7 +173,7 @@ const Index = () => {
                     className="cursor-pointer hover:bg-blue-100 transition-colors"
                     onClick={() => {
                       setSearchQuery(symptom);
-                      handleSearch();
+                      setTimeout(() => handleSearch(), 100);
                     }}
                   >
                     {symptom}
@@ -178,6 +199,7 @@ const Index = () => {
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-2xl font-semibold text-gray-900">
                 {filteredDoctors.length} Doctors Found
+                {userLocation ? ' Near You' : ' in Bangalore'}
               </h3>
               <Button
                 variant="outline"
@@ -201,22 +223,42 @@ const Index = () => {
           </div>
         )}
 
+        {/* Loading State */}
+        {isLoading && (
+          <Card className="text-center py-12 bg-white/50">
+            <CardContent>
+              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <p className="text-gray-600">Finding doctors for you...</p>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Empty State */}
-        {!isLoading && doctors.length === 0 && searchQuery && (
+        {!isLoading && doctors.length === 0 && (
           <Card className="text-center py-12 bg-white/50">
             <CardContent>
               <Stethoscope className="h-16 w-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-700 mb-2">No doctors found</h3>
               <p className="text-gray-500 mb-4">
-                Try adjusting your search terms or location
+                Try adjusting your search terms or location, or browse all available doctors
               </p>
-              <Button
-                onClick={() => setShowChatBot(true)}
-                className="bg-blue-600 hover:bg-blue-700"
-              >
-                <MessageCircle className="h-4 w-4 mr-2" />
-                Get Help from AI Assistant
-              </Button>
+              <div className="flex gap-2 justify-center">
+                <Button
+                  onClick={loadInitialDoctors}
+                  variant="outline"
+                  className="bg-blue-50 hover:bg-blue-100"
+                >
+                  <Stethoscope className="h-4 w-4 mr-2" />
+                  Show All Doctors
+                </Button>
+                <Button
+                  onClick={() => setShowChatBot(true)}
+                  className="bg-blue-600 hover:bg-blue-700"
+                >
+                  <MessageCircle className="h-4 w-4 mr-2" />
+                  Get Help from AI Assistant
+                </Button>
+              </div>
             </CardContent>
           </Card>
         )}
@@ -229,7 +271,7 @@ const Index = () => {
           onSymptomSelected={(symptom) => {
             setSearchQuery(symptom);
             setShowChatBot(false);
-            handleSearch();
+            setTimeout(() => handleSearch(), 100);
           }}
         />
       )}
